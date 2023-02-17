@@ -16,7 +16,7 @@
         async function activateXR() {
             const canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
-            const g1 = canvas.getContext("webg1", {xrCompatible: true});
+            const gl = canvas.getContext("webg1", {xrCompatible: true});
     
             const scene = new THREE.Scene();
             const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
@@ -27,7 +27,7 @@
                 alpha: true,
                 preserveDrawingBuffer: true,
                 canvas: canvas,
-                context: g1
+                context: gl
             });
             renderer.autoClear = false;
     
