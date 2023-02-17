@@ -35,9 +35,9 @@
             camera.matrixAutoUpdate = false;
     
             const session = await navigator.xr.requestSession("immersive-ar", {requiredFeatures: ['hit-test']});
-            session.updateRenderState({
-                baseLayer: new XRWebGLLayer(session, gl)
-            });
+            //session.updateRenderState({
+            //    baseLayer: new XRWebGLLayer(session, gl)
+            //});
             const referenceSpace = await session.requestReferenceSpace('local');
 
             const viewerSpace = await session.requestReferenceSpace('viewer');
