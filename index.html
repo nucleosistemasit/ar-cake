@@ -59,7 +59,7 @@
         vec3.set(shadow.scale, 0.15, 0.15, 0.15);
         arObject.addNode(shadow);
 
-        const MAX_FLOWERS = 30;
+        const MAX_FLOWERS = 1;
         let flowers = [];
 
         // Ensure the background is transparent for AR.
@@ -67,27 +67,27 @@
 
         function initXR() {
             xrButton = new WebXRButton({
-            onRequestSession: onRequestSession,
-            onEndSession: onEndSession,
-            textEnterXRTitle: "START AR",
-            textXRNotFoundTitle: "AR NOT FOUND",
-            textExitXRTitle: "EXIT  AR",
+                onRequestSession: onRequestSession,
+                onEndSession: onEndSession,
+                textEnterXRTitle: "START AR",
+                textXRNotFoundTitle: "AR NOT FOUND",
+                textExitXRTitle: "EXIT  AR",
             });
             document.querySelector('header').appendChild(xrButton.domElement);
 
             if (navigator.xr) {
-            navigator.xr.isSessionSupported('immersive-ar')
-                        .then((supported) => {
-                xrButton.enabled = supported;
-            });
+                navigator.xr.isSessionSupported('immersive-ar')
+                    .then((supported) => {
+                    xrButton.enabled = supported;
+                });
             }
         }
 
         function onRequestSession() {
             return navigator.xr.requestSession('immersive-ar', {requiredFeatures: ['local', 'hit-test']})
-                            .then((session) => {
-            xrButton.setSession(session);
-            onSessionStarted(session);
+                .then((session) => {
+                xrButton.setSession(session);
+                onSessionStarted(session);
             });
         }
 
@@ -96,13 +96,13 @@
             session.addEventListener('select', onSelect);
 
             if (!gl) {
-            gl = createWebGLContext({
-                xrCompatible: true
-            });
+                gl = createWebGLContext({
+                    xrCompatible: true
+                });
 
-            renderer = new Renderer(gl);
+                renderer = new Renderer(gl);
 
-            scene.setRenderer(renderer);
+                scene.setRenderer(renderer);
             }
 
             session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
@@ -112,16 +112,16 @@
             // surface. To do this we first get the viewer space, then create a
             // hitTestSource that tracks it.
             session.requestReferenceSpace('viewer').then((refSpace) => {
-            xrViewerSpace = refSpace;
-            session.requestHitTestSource({ space: xrViewerSpace }).then((hitTestSource) => {
-                xrHitTestSource = hitTestSource;
-            });
+                xrViewerSpace = refSpace;
+                session.requestHitTestSource({ space: xrViewerSpace }).then((hitTestSource) => {
+                    xrHitTestSource = hitTestSource;
+                });
             });
 
             session.requestReferenceSpace('local').then((refSpace) => {
-            xrRefSpace = refSpace;
+                xrRefSpace = refSpace;
 
-            session.requestAnimationFrame(onXRFrame);
+                session.requestAnimationFrame(onXRFrame);
             });
         }
 
@@ -149,8 +149,8 @@
             // removing the oldest ones to keep the scene complexity
             // from growing too much.
             if (flowers.length > MAX_FLOWERS) {
-            let oldFlower = flowers.shift();
-            scene.removeNode(oldFlower);
+                let oldFlower = flowers.shift();
+                scene.removeNode(oldFlower);
             }
         }
 
@@ -158,10 +158,10 @@
         let rayDirection = vec3.create();
         function onSelect(event) {
             if (reticle.visible) {
-            // The reticle should already be positioned at the latest hit point, 
-            // so we can just use it's matrix to save an unnecessary call to 
-            // event.frame.getHitTestResults.
-            addARObjectAt(reticle.matrix);
+                // The reticle should already be positioned at the latest hit point, 
+                // so we can just use it's matrix to save an unnecessary call to 
+                // event.frame.getHitTestResults.
+                addARObjectAt(reticle.matrix);
             }
         }
 
@@ -175,12 +175,12 @@
             // If we have a hit test source, get its results for the frame
             // and use the pose to display a reticle in the scene.
             if (xrHitTestSource && pose) {
-            let hitTestResults = frame.getHitTestResults(xrHitTestSource);
-            if (hitTestResults.length > 0) {
-                let pose = hitTestResults[0].getPose(xrRefSpace);
-                reticle.visible = true;
-                reticle.matrix = pose.transform.matrix;
-            }
+                let hitTestResults = frame.getHitTestResults(xrHitTestSource);
+                if (hitTestResults.length > 0) {
+                    let pose = hitTestResults[0].getPose(xrRefSpace);
+                    reticle.visible = true;
+                    reticle.matrix = pose.transform.matrix;
+                }
             }
 
             scene.startFrame();
