@@ -13,10 +13,10 @@
 <body>
     <header>
         <details open>
-            <summary>Hit Test</summary>
+            <summary>Feliz Aniversário!</summary>
             <p>
-                This sample demonstrates the use of hit testing to place virtual objects on real-world surfaces.
-                <a class="back" href="./">Back</a>
+                Esta experiência foi desenvolvida para ajudar a celebrar este dia tão importante para você e seus amigos, aproveite!
+                <a class="back" href="./">Sair</a>
             </p>
         </details>
     </header>
@@ -30,13 +30,13 @@
         import {vec3} from './js/render/math/gl-matrix.js';
         import {Ray} from './js/render/math/ray.js';
 
-        // XR globals.
+        // XR.
         let xrButton = null;
         let xrRefSpace = null;
         let xrViewerSpace = null;
         let xrHitTestSource = null;
 
-        // WebGL scene globals.
+        // WebGL.
         let gl = null;
         let renderer = null;
         let scene = new Scene();
@@ -46,8 +46,8 @@
         arObject.visible = false;
         scene.addNode(arObject);
 
-        let flower = new Gltf2Node({url: 'media/gltf/sunflower/sunflower.gltf'});
-        arObject.addNode(flower);
+        let cake = new Gltf2Node({url: 'media/gltf/cake/cake.gltf'});
+        arObject.addNode(cake);
 
         let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
         reticle.visible = false;
@@ -59,8 +59,8 @@
         vec3.set(shadow.scale, 0.15, 0.15, 0.15);
         arObject.addNode(shadow);
 
-        const MAX_FLOWERS = 1;
-        let flowers = [];
+        const MAX_CAKES = 1;
+        let cakes = [];
 
         // Ensure the background is transparent for AR.
         scene.clear = false;
@@ -76,16 +76,14 @@
             document.querySelector('header').appendChild(xrButton.domElement);
 
             if (navigator.xr) {
-                navigator.xr.isSessionSupported('immersive-ar')
-                    .then((supported) => {
+                navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
                     xrButton.enabled = supported;
                 });
             }
         }
 
         function onRequestSession() {
-            return navigator.xr.requestSession('immersive-ar', {requiredFeatures: ['local', 'hit-test']})
-                .then((session) => {
+            return navigator.xr.requestSession('immersive-ar', {requiredFeatures: ['local', 'hit-test']}).then((session) => {
                 xrButton.setSession(session);
                 onSessionStarted(session);
             });
@@ -120,7 +118,6 @@
 
             session.requestReferenceSpace('local').then((refSpace) => {
                 xrRefSpace = refSpace;
-
                 session.requestAnimationFrame(onXRFrame);
             });
         }
@@ -138,19 +135,19 @@
         // Adds a new object to the scene at the
         // specified transform.
         function addARObjectAt(matrix) {
-            let newFlower = arObject.clone();
-            newFlower.visible = true;
-            newFlower.matrix = matrix;
-            scene.addNode(newFlower);
+            let newCake = arObject.clone();
+            newCake.visible = true;
+            newCake.matrix = matrix;
+            scene.addNode(newCake);
 
-            flowers.push(newFlower);
+            cakes.push(newCake);
 
             // For performance reasons if we add too many objects start
             // removing the oldest ones to keep the scene complexity
             // from growing too much.
-            if (flowers.length > MAX_FLOWERS) {
-                let oldFlower = flowers.shift();
-                scene.removeNode(oldFlower);
+            if (cakes.length > MAX_CAKES) {
+                let oldCake = cakes.shift();
+                scene.removeNode(oldCake);
             }
         }
 
@@ -184,11 +181,8 @@
             }
 
             scene.startFrame();
-
             session.requestAnimationFrame(onXRFrame);
-
             scene.drawXRFrame(frame, pose);
-
             scene.endFrame();
         }
 
