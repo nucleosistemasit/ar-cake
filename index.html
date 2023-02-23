@@ -43,7 +43,7 @@
         scene.enableStats(false);
 
         let arObject = new Node();
-        arObject.scale = 0.5;
+        arObject.scale(0.5);
         arObject.visible = false;
         scene.addNode(arObject);
 
@@ -67,6 +67,7 @@
         scene.clear = false;
 
         function initXR() {
+            console.log("Fernapim = " + arObject.scale)
             xrButton = new WebXRButton({
                 onRequestSession: onRequestSession,
                 onEndSession: onEndSession,
