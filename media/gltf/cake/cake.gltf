@@ -3,12 +3,39 @@
         "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
+    "extensionsUsed" : [
+        "KHR_lights_punctual"
+    ],
+    "extensionsRequired" : [
+        "KHR_lights_punctual"
+    ],
+    "extensions" : {
+        "KHR_lights_punctual" : {
+            "lights" : [
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 13011.727956237513,
+                    "spot" : {
+                        "innerConeAngle" : 0.14721538132481982,
+                        "outerConeAngle" : 0.5567600131034851
+                    },
+                    "type" : "spot",
+                    "name" : "Spot"
+                }
+            ]
+        }
+    },
     "scene" : 0,
     "scenes" : [
         {
             "name" : "Scene",
             "nodes" : [
-                55
+                55,
+                56
             ]
         }
     ],
@@ -654,6 +681,25 @@
                 16.373924255371094,
                 16.373926162719727,
                 16.373926162719727
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 0
+                }
+            },
+            "name" : "Spot",
+            "rotation" : [
+                -0.6931633949279785,
+                0.5128039121627808,
+                0.13973015546798706,
+                0.4868595004081726
+            ],
+            "translation" : [
+                0.5570806860923767,
+                0.9799306392669678,
+                -0.297489196062088
             ]
         }
     ],
