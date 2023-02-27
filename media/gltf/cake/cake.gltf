@@ -52,6 +52,13 @@
     ],
     "nodes" : [
         {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 0
+                }
+            }
+        }
+        {
             "mesh" : 0,
             "name" : "B-material"
         },
