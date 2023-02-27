@@ -3,12 +3,69 @@
         "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
+    "extensionsUsed" : [
+        "KHR_lights_punctual"
+    ],
+    "extensionsRequired" : [
+        "KHR_lights_punctual"
+    ],
+    "extensions" : {
+        "KHR_lights_punctual" : {
+            "lights" : [
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 3576.3227309340286,
+                    "spot" : {
+                        "innerConeAngle" : 0.3337942263919169,
+                        "outerConeAngle" : 0.39269909262657166
+                    },
+                    "type" : "spot",
+                    "name" : "Spot"
+                },
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 3576.3227309340286,
+                    "spot" : {
+                        "innerConeAngle" : 0.3337942263919169,
+                        "outerConeAngle" : 0.39269909262657166
+                    },
+                    "type" : "spot",
+                    "name" : "Spot.001"
+                },
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 3576.3227309340286,
+                    "spot" : {
+                        "innerConeAngle" : 0.3337942263919169,
+                        "outerConeAngle" : 0.39269909262657166
+                    },
+                    "type" : "spot",
+                    "name" : "Spot.002"
+                }
+            ]
+        }
+    },
     "scene" : 0,
     "scenes" : [
         {
             "name" : "Scene",
             "nodes" : [
-                14
+                14,
+                15,
+                16,
+                17
             ]
         }
     ],
@@ -95,7 +152,7 @@
             ],
             "scale" : [
                 1,
-                1.617609977722168,
+                1.6176100969314575,
                 1
             ],
             "translation" : [
@@ -121,6 +178,63 @@
                 0,
                 0,
                 0.7071066498756409
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 0
+                }
+            },
+            "name" : "Spot",
+            "rotation" : [
+                -0.5942976474761963,
+                0,
+                0,
+                0.8042452335357666
+            ],
+            "translation" : [
+                0.25075623393058777,
+                2.879362106323242,
+                1.3811030387878418
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 1
+                }
+            },
+            "name" : "Spot.001",
+            "rotation" : [
+                -0.5942976474761963,
+                0,
+                0,
+                0.8042452335357666
+            ],
+            "translation" : [
+                0.4566168785095215,
+                2.879362106323242,
+                -0.4799220561981201
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 2
+                }
+            },
+            "name" : "Spot.002",
+            "rotation" : [
+                -0.5942976474761963,
+                0,
+                0,
+                0.8042452335357666
+            ],
+            "translation" : [
+                -1.1211857795715332,
+                2.879362106323242,
+                0.17119336128234863
             ]
         }
     ],
