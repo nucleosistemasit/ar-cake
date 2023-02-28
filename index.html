@@ -1,194 +1,164 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-capable' content='yes'>
-    <title>Aniversariante - Mérito</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel='stylesheet' href='css/common.css'>
-</head>
-<body>
-    <header>
-        <details open>
-            <summary>Feliz Aniversário!</summary>
-            <p>
-                Esta experiência foi desenvolvida para ajudar a celebrar este dia tão importante para você e seus amigos, aproveite!
-                <a class="back" href="./">Sair</a>
-            </p>
-        </details>
-    </header>
-    <script type="module">
-        import {WebXRButton} from './js/util/webxr-button.js';
-        import {Scene} from './js/render/scenes/scene.js';
-        import {Renderer, createWebGLContext} from './js/render/core/renderer.js';
-        import {Node} from './js/render/core/node.js';
-        import {Gltf2Node} from './js/render/nodes/gltf2.js';
-        import {DropShadowNode} from './js/render/nodes/drop-shadow.js';
-        import {vec3} from './js/render/math/gl-matrix.js';
-        import {Ray} from './js/render/math/ray.js';
+	<head>
+		<title>Aniversariante Mérito</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
 
-        // XR.
-        let xrButton = null;
-        let xrRefSpace = null;
-        let xrViewerSpace = null;
-        let xrHitTestSource = null;
+		<script type="module">
 
-        // WebGL.
-        let gl = null;
-        let renderer = null;
-        let scene = new Scene();
-        scene.enableStats(false);
+			import * as THREE from './three.module.js';
+			import { ARButton } from './ARButton.js';
 
-        let arObject = new Node();
-        arObject.scale = 0.5;
-        arObject.visible = false;
-        scene.addNode(arObject);
+			let container;
+			let camera, scene, renderer;
+			let controller;
 
-        let cake = new Gltf2Node({url: 'media/gltf/cake/cake.gltf'});
-        arObject.addNode(cake);
+			let reticle;
 
-        let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
-        reticle.visible = false;
-        scene.addNode(reticle);
+			let hitTestSource = null;
+			let hitTestSourceRequested = false;
 
-        // Having a really simple drop shadow underneath an object helps ground
-        // it in the world without adding much complexity.
-        let shadow = new DropShadowNode();
-        vec3.set(shadow.scale, 0.15, 0.15, 0.15);
-        arObject.addNode(shadow);
+			init();
+			animate();
 
-        const MAX_CAKES = 1;
-        let cakes = [];
+			function init() {
 
-        // Ensure the background is transparent for AR.
-        scene.clear = false;
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
-        function initXR() {
-            xrButton = new WebXRButton({
-                onRequestSession: onRequestSession,
-                onEndSession: onEndSession,
-                textEnterXRTitle: "START AR",
-                textXRNotFoundTitle: "AR NOT FOUND",
-                textExitXRTitle: "EXIT  AR",
-            });
-            document.querySelector('header').appendChild(xrButton.domElement);
+				scene = new THREE.Scene();
 
-            if (navigator.xr) {
-                navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-                    xrButton.enabled = supported;
-                });
-            }
-        }
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
 
-        function onRequestSession() {
-            return navigator.xr.requestSession('immersive-ar', {requiredFeatures: ['local', 'hit-test']}).then((session) => {
-                xrButton.setSession(session);
-                onSessionStarted(session);
-            });
-        }
+				const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
+				light.position.set( 0.5, 1, 0.25 );
+				scene.add( light );
 
-        function onSessionStarted(session) {
-            session.addEventListener('end', onSessionEnded);
-            session.addEventListener('select', onSelect);
+				//
 
-            if (!gl) {
-                gl = createWebGLContext({
-                    xrCompatible: true
-                });
+				renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.xr.enabled = true;
+				container.appendChild( renderer.domElement );
 
-                renderer = new Renderer(gl);
+				//
 
-                scene.setRenderer(renderer);
-            }
+				document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
 
-            session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
+				//
 
-            // In this sample we want to cast a ray straight out from the viewer's
-            // position and render a reticle where it intersects with a real world
-            // surface. To do this we first get the viewer space, then create a
-            // hitTestSource that tracks it.
-            session.requestReferenceSpace('viewer').then((refSpace) => {
-                xrViewerSpace = refSpace;
-                session.requestHitTestSource({ space: xrViewerSpace }).then((hitTestSource) => {
-                    xrHitTestSource = hitTestSource;
-                });
-            });
+				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 
-            session.requestReferenceSpace('local').then((refSpace) => {
-                xrRefSpace = refSpace;
-                session.requestAnimationFrame(onXRFrame);
-            });
-        }
+				function onSelect() {
 
-        function onEndSession(session) {
-            xrHitTestSource.cancel();
-            xrHitTestSource = null;
-            session.end();
-        }
+					if ( reticle.visible ) {
 
-        function onSessionEnded(event) {
-            xrButton.setSession(null);
-        }
+						const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+						const mesh = new THREE.Mesh( geometry, material );
+						reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
+						mesh.scale.y = Math.random() * 2 + 1;
+						scene.add( mesh );
 
-        // Adds a new object to the scene at the
-        // specified transform.
-        function addARObjectAt(matrix) {
-            let newCake = arObject.clone();
-            newCake.visible = true;
-            newCake.matrix = matrix;
-            scene.addNode(newCake);
+					}
 
-            cakes.push(newCake);
+				}
 
-            // For performance reasons if we add too many objects start
-            // removing the oldest ones to keep the scene complexity
-            // from growing too much.
-            if (cakes.length > MAX_CAKES) {
-                let oldCake = cakes.shift();
-                scene.removeNode(oldCake);
-            }
-        }
+				controller = renderer.xr.getController( 0 );
+				controller.addEventListener( 'select', onSelect );
+				scene.add( controller );
 
-        let rayOrigin = vec3.create();
-        let rayDirection = vec3.create();
-        function onSelect(event) {
-            if (reticle.visible) {
-                // The reticle should already be positioned at the latest hit point, 
-                // so we can just use it's matrix to save an unnecessary call to 
-                // event.frame.getHitTestResults.
-                addARObjectAt(reticle.matrix);
-            }
-        }
+				reticle = new THREE.Mesh(
+					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
+					new THREE.MeshBasicMaterial()
+				);
+				reticle.matrixAutoUpdate = false;
+				reticle.visible = false;
+				scene.add( reticle );
 
-        // Called every time a XRSession requests that a new frame be drawn.
-        function onXRFrame(t, frame) {
-            let session = frame.session;
-            let pose = frame.getViewerPose(xrRefSpace);
+				//
 
-            reticle.visible = false;
+				window.addEventListener( 'resize', onWindowResize );
 
-            // If we have a hit test source, get its results for the frame
-            // and use the pose to display a reticle in the scene.
-            if (xrHitTestSource && pose) {
-                let hitTestResults = frame.getHitTestResults(xrHitTestSource);
-                if (hitTestResults.length > 0) {
-                    let pose = hitTestResults[0].getPose(xrRefSpace);
-                    reticle.visible = true;
-                    reticle.matrix = pose.transform.matrix;
-                }
-            }
+			}
 
-            scene.startFrame();
-            session.requestAnimationFrame(onXRFrame);
-            scene.drawXRFrame(frame, pose);
-            scene.endFrame();
-        }
+			function onWindowResize() {
 
-        // Start the XR application.
-        initXR();
-    </script>
-</body>
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				renderer.setAnimationLoop( render );
+
+			}
+
+			function render( timestamp, frame ) {
+
+				if ( frame ) {
+
+					const referenceSpace = renderer.xr.getReferenceSpace();
+					const session = renderer.xr.getSession();
+
+					if ( hitTestSourceRequested === false ) {
+
+						session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+
+							session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+
+								hitTestSource = source;
+
+							} );
+
+						} );
+
+						session.addEventListener( 'end', function () {
+
+							hitTestSourceRequested = false;
+							hitTestSource = null;
+
+						} );
+
+						hitTestSourceRequested = true;
+
+					}
+
+					if ( hitTestSource ) {
+
+						const hitTestResults = frame.getHitTestResults( hitTestSource );
+
+						if ( hitTestResults.length ) {
+
+							const hit = hitTestResults[ 0 ];
+
+							reticle.visible = true;
+							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
+
+						} else {
+
+							reticle.visible = false;
+
+						}
+
+					}
+
+				}
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
 </html>
