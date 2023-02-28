@@ -3,12 +3,54 @@
         "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
+    "extensionsUsed" : [
+        "KHR_lights_punctual"
+    ],
+    "extensionsRequired" : [
+        "KHR_lights_punctual"
+    ],
+    "extensions" : {
+        "KHR_lights_punctual" : {
+            "lights" : [
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 54314542.4260437,
+                    "spot" : {
+                        "innerConeAngle" : 1.0471975803375244,
+                        "outerConeAngle" : 1.0471975803375244
+                    },
+                    "type" : "spot",
+                    "name" : "Spot"
+                },
+                {
+                    "color" : [
+                        1,
+                        1,
+                        1
+                    ],
+                    "intensity" : 54314542.4260437,
+                    "spot" : {
+                        "innerConeAngle" : 1.0471975803375244,
+                        "outerConeAngle" : 1.0471975803375244
+                    },
+                    "type" : "spot",
+                    "name" : "Spot.001"
+                }
+            ]
+        }
+    },
     "scene" : 0,
     "scenes" : [
         {
             "name" : "Scene",
             "nodes" : [
-                832
+                832,
+                833,
+                834
             ]
         }
     ],
@@ -11374,6 +11416,44 @@
                 0.01675867848098278,
                 0.01675867848098278,
                 0.01675867848098278
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 0
+                }
+            },
+            "name" : "Spot",
+            "rotation" : [
+                -0.6303068399429321,
+                0.328067421913147,
+                -0.3211532533168793,
+                0.6260557174682617
+            ],
+            "translation" : [
+                163.00042724609375,
+                120.54268646240234,
+                0
+            ]
+        },
+        {
+            "extensions" : {
+                "KHR_lights_punctual" : {
+                    "light" : 1
+                }
+            },
+            "name" : "Spot.001",
+            "rotation" : [
+                -0.672848641872406,
+                0.022416697815060616,
+                0.4851802885532379,
+                0.5580074191093445
+            ],
+            "translation" : [
+                -101.64111328125,
+                120.54268646240234,
+                0
             ]
         }
     ],
