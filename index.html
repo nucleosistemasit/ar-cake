@@ -26,9 +26,10 @@
 
 			let container;
 			let camera, scene, renderer;
-			let controller;
+			let controller, workingVec3;
 
 			let reticle;
+			let cake;
 
 			let hitTestSource = null;
 			let hitTestSourceRequested = false;
@@ -59,25 +60,27 @@
 
 				//
 
-				document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+				workingVec3 = new THREE.Vector3();
 
 				//
 
+				document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+
+				//
+				
 				const loader = new GLTFLoader();
 
-				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
+				loader.load('./models/cake/cake.glb', function ( gltf ) {
+					cake = gltf.scene;
+					cake.visible = false;
+					scene.add(cake);
+				})
 
 				function onSelect() {
-
 					if ( reticle.visible ) {
-
-						loader.load('./models/cake/cake.glb', function ( gltf ) {
-							scene.add( gltf.scene );
-						}, undefined, function ( error ) {
-							console.error( error );
-						} );
+						cake.visible = true;
+						cake.position.setFromMatrixPosition(reticle.matrix);
 					}
-
 				}
 
 				controller = renderer.xr.getController( 0 );
