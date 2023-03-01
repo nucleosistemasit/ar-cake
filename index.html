@@ -9,10 +9,20 @@
 	<body>
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
 
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "./three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
+
 		<script type="module">
 
-			import * as THREE from './three.module.js';
-			import { ARButton } from './ARButton.js';
+			import * as THREE from 'three';
+			import { ARButton } from './jsm/webxr/ARButton.js';
+			import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
 			let container;
 			let camera, scene, renderer;
@@ -53,18 +63,19 @@
 
 				//
 
+				const loader = new GLTFLoader();
+
 				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 
 				function onSelect() {
 
 					if ( reticle.visible ) {
 
-						const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
-						const mesh = new THREE.Mesh( geometry, material );
-						reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
-						mesh.scale.y = Math.random() * 2 + 1;
-						scene.add( mesh );
-
+						loader.load('./models/cake/cake.glb', function ( gltf ) {
+							scene.add( gltf.scene );
+						}, undefined, function ( error ) {
+							console.error( error );
+						} );
 					}
 
 				}
