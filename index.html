@@ -85,7 +85,7 @@
 
 				function onSelect() {
 					if ( reticle.visible ) {
-						notificate("teste", "teste");
+						Window.alert("test");
 						cake.visible = true;
 						cake.position.setFromMatrixPosition(reticle.matrix);
 					}
@@ -179,13 +179,6 @@
 
 				renderer.render( scene, camera );
 
-			}
-
-			function notificate( title, text ) {
-				jSuites.notification( { 
-					name: title,
-					message: text,
-				} )
 			}
 
 		</script>
