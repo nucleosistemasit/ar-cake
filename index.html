@@ -82,13 +82,6 @@
 
 				function onSelect() {
 					if ( reticle.visible ) {
-						Notification.requestPermission().then( perm => { 
-							if ( perm === "granted" ) {
-								new Notification("Example notification", {
-									body: "Teste",
-								} )
-							}
-						} )
 						cake.visible = true;
 						cake.position.setFromMatrixPosition(reticle.matrix);
 					}
