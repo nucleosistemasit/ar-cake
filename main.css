@@ -99,7 +99,8 @@ div#introduction {
 	margin: auto;
 	font-size: 1em;
 	text-align: center;
-	top: 0;
+	height: center;
+	top: 50%;
 	right: 0;
 	left: 0;
 }
