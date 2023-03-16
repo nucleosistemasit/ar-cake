@@ -103,3 +103,8 @@ div#introduction {
 	right: 0;
 	left: 0;
 }
+
+div.item {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
