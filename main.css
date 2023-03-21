@@ -96,13 +96,16 @@ div {
 
 div#introduction {
 	position: absolute;
-	margin: auto;
-	font-size: 1em;
-	text-align: center;
-	height: center;
-	top: 50%;
+    	margin: auto;
+    	font-size: 1em;
+    	text-align: center;
+	width: 85%;
 	right: 0;
 	left: 0;
+	padding-top: 125px;   
+	overflow: hidden;
+   
+	
 }
 
 div.item {
